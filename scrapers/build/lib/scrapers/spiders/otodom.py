@@ -52,7 +52,7 @@ class OtodomSpider(scrapy.Spider):
                 surface = " ".join([details_dd[0], details_dd[1], details_dd[2]])
                 del details_dd[0:3]
             if 'Cena za metr kwadratowy' in details_dt:
-                price_per_m = " ".join([details_dd[0], details_dd[2]]) # .replace("\xa0129\xa0", "")
+                price_per_m = " ".join([details_dd[0].replace("\xa0129\xa0", ""), details_dd[2]])
                 del details_dd[0:3]
             if 'Piętro' in details_dt:
                 floor = details_dd[0]
