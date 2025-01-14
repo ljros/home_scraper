@@ -7,7 +7,7 @@ from ..items import HomeItems
 class OtodomSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
-        super(OtodomSpider, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # self.sellers = ast.literal_eval(usernames)
 
         # self.seller_url_gen = ('https://www.ebay.{}/fdbk/feedback_profile/{}'.format(self.domain_, quote_plus(seller)) for seller in self.sellers)
