@@ -1,3 +1,4 @@
+# only for zyte
 requirements:
   file: requirements.txt
 stacks:

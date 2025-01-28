@@ -1,1 +1,1 @@
-worker: scrapy crawl otodom.py
+worker: cd scrapers && scrapy crawl otodom.py
