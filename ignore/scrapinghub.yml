@@ -1,5 +1,0 @@
-# only for zyte
-requirements:
-  file: requirements.txt
-stacks:
-  default: scrapy:2.12
