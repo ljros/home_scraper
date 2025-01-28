@@ -15,7 +15,7 @@ class HomeItems(scrapy.Item):
     price_per_m = scrapy.Field()
     floor = scrapy.Field()
     seller = scrapy.Field()
-
+    link = scrapy.Field()
 
 
 class ScrapersItem(scrapy.Item):
