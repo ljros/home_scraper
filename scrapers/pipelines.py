@@ -4,6 +4,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
+from sqlalchemy import text
+
 
 # Import our database models
 from .models import Base, ScrapedItem
