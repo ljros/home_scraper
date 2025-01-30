@@ -71,7 +71,7 @@ class SQLAlchemyPipeline:
                     price_per_m = EXCLUDED.price_per_m,
                     floor = EXCLUDED.floor,
                     seller = EXCLUDED.seller,
-                    link = EXCLUDED.link
+                    link = EXCLUDED.link,
                     date_last_seen = CURRENT_TIMESTAMP
                 RETURNING id, (xmax = 0) as is_insert
             """)
