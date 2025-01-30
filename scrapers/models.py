@@ -5,7 +5,7 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class ScrapedItem(Base):
+class ApartmentListing(Base):
     __tablename__ = 'apartment_listings'
 
     id = Column(Integer, primary_key=True)
@@ -20,6 +20,6 @@ class ScrapedItem(Base):
     floor = Column(String)
     seller = Column(String)
     link = Column(String)
-
+    
     # scraped_at = Column(DateTime, default=datetime.utcnow)
 

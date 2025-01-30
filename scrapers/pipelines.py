@@ -8,7 +8,7 @@ from sqlalchemy import text
 
 
 # Import our database models
-from .models import Base, ScrapedItem
+from .models import Base, ApartmentListing
 
 class SQLAlchemyPipeline:
     def __init__(self, db_url):
@@ -58,7 +58,7 @@ class SQLAlchemyPipeline:
 
             # Using raw SQL through SQLAlchemy to avoid duplicate entries
             stmt = text("""
-                INSERT INTO scraped_items (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link)
+                INSERT INTO apartment_listings (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link)
                 VALUES (:image, :price, :short_desc, :address, :rooms, :surface, :price_per_m, :floor, :seller, :link)
                 ON CONFLICT (link) 
                 DO UPDATE SET 
