@@ -39,25 +39,70 @@ class SQLAlchemyPipeline:
         """Save each scraped item to database."""
         session = self.Session()
         try:
-            # Create database item from scraped item
-            db_item = ScrapedItem(
-                image=item.get('image'),
-                price=item.get('price'),
-                short_desc=item.get('short_desc'),
-                address=item.get('address'),
-                rooms=item.get('rooms'),
-                surface=item.get('surface'),
-                price_per_m=item.get('price_per_m'),
-                floor=item.get('floor'),
-                seller=item.get('seller'),
-                link=item.get('link')
+            # # Create database item from scraped item
+            # db_item = ScrapedItem(
+            #     image=item.get('image'),
+            #     price=item.get('price'),
+            #     short_desc=item.get('short_desc'),
+            #     address=item.get('address'),
+            #     rooms=item.get('rooms'),
+            #     surface=item.get('surface'),
+            #     price_per_m=item.get('price_per_m'),
+            #     floor=item.get('floor'),
+            #     seller=item.get('seller'),
+            #     link=item.get('link')
+            # )
+            # session.add(db_item)
+
+            # Using raw SQL through SQLAlchemy to avoid duplicate entries
+            stmt = text("""
+                INSERT INTO scraped_items (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link)
+                VALUES (:image, :price, :short_desc, :address, :rooms, :surface, :price_per_m, :floor, :seller, :link)
+                ON CONFLICT (link) 
+                DO UPDATE SET 
+                    image = EXCLUDED.image,
+                    price = EXCLUDED.price,
+                    short_desc = EXCLUDED.short_desc,
+                    address = EXCLUDED.address,
+                    rooms = EXCLUDED.rooms,
+                    surface = EXCLUDED.surface,
+                    price_per_m = EXCLUDED.price_per_m,
+                    floor = EXCLUDED.floor,
+                    seller = EXCLUDED.seller,
+                    link = EXCLUDED.link
+                    date_last_seen = CURRENT_TIMESTAMP
+                RETURNING id, (xmax = 0) as is_insert
+            """)
+            
+            result = session.execute(
+                stmt,
+                {
+                    'image': item.get('image'),
+                    'price': item.get('price'),
+                    'short_desc': item.get('short_desc'),
+                    'address': item.get('address'),
+                    'rooms': item.get('rooms'),
+                    'surface': item.get('surface'),
+                    'price_per_m': item.get('price_per_m'),
+                    'floor': item.get('floor'),
+                    'seller': item.get('seller'),
+                    'link': item.get('link')
+                }
             )
-            session.add(db_item)
+            row = result.fetchone()
+            
+            # Log whether this was an insert or update
+            if row.is_insert:
+                spider.logger.info(f"New listing added: {item.get('link')}")
+            else:
+                spider.logger.info(f"Listing updated: {item.get('link')}")
+            
             session.commit()
+            
         except Exception as e:
             # If anything goes wrong, rollback the session
             session.rollback()
-            spider.logger.error(f"Failed to save item to database: {e}")
+            spider.logger.error(f"Failed to process item: {e}")
             raise
         finally:
             # Always close the session

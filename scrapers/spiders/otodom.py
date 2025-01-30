@@ -54,6 +54,8 @@ class OtodomSpider(scrapy.Spider):
             if 'Piętro' in details_dt:
                 floor = details_dd[0]
                 del details_dd[0]
+            if link:
+                link = 'https://www.otodom.pl' + link
 
             seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
 

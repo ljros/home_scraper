@@ -6,7 +6,7 @@ from datetime import datetime
 Base = declarative_base()
 
 class ScrapedItem(Base):
-    __tablename__ = 'scraped_items'
+    __tablename__ = 'apartment_listings'
 
     id = Column(Integer, primary_key=True)
     # Modify these fields based on your spider's items
