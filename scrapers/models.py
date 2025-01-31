@@ -2,8 +2,7 @@
 # from sqlalchemy.ext.declarative import declarative_base
 # from sqlalchemy.engine.url import URL
 from datetime import datetime
-
-from ..shared.database import Base
+from shared.database import Base
 
 class ApartmentListing(Base):
     __tablename__ = 'apartment_listings'

@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from ..shared.database import SessionLocal, init_db
+from shared.database import SessionLocal, init_db
 
 class SQLAlchemyPipeline:
     def open_spider(self, spider):

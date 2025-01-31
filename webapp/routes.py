@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
-from ..shared.database import SessionLocal
-from ..models import ApartmentListing
+from shared.database import SessionLocal
+from scrapers.models import ApartmentListing
 
 bp = Blueprint('apartments', __name__)
 
