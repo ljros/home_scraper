@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Listings</title>
+</head>
+<body>
+    <h1>Apartment Listings</h1>
+
+    <!-- Filter Form -->
+    <form method="get" action="/">
+        <label for="min_price">Min Price:</label>
+        <input type="number" name="min_price" id="min_price">
+        
+        <label for="max_price">Max Price:</label>
+        <input type="number" name="max_price" id="max_price">
+
+        <label for="seller">Seller:</label>
+        <input type="text" name="seller" id="seller">
+
+        <button type="submit">Filter</button>
+    </form>
+
+    <!-- Listings Table -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Price</th>
+                <th>Short Description</th>
+                <th>Address</th>
+                <th>Rooms</th>
+                <th>Surface</th>
+                <th>Price per m²</th>
+                <th>Floor</th>
+                <th>Seller</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for listing in listings %}
+            <tr>
+                <td><img src="{{ listing.image }}" alt="Apartment Image" width="100"></td>
+                <td>{{ listing.price }}</td>
+                <td>{{ listing.short_desc }}</td>
+                <td>{{ listing.address }}</td>
+                <td>{{ listing.rooms }}</td>
+                <td>{{ listing.surface }}</td>
+                <td>{{ listing.price_per_m }}</td>
+                <td>{{ listing.floor }}</td>
+                <td>{{ listing.seller }}</td>
+                <td><a href="{{ listing.link }}">View Listing</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="10">No listings found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

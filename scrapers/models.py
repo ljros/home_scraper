@@ -1,9 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.engine.url import URL
+# from sqlalchemy import create_engine, Column, Integer, String, DateTime
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.engine.url import URL
 from datetime import datetime
 
-Base = declarative_base()
+from ..shared.database import Base
 
 class ApartmentListing(Base):
     __tablename__ = 'apartment_listings'
