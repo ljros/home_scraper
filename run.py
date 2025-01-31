@@ -1,5 +1,5 @@
 import os
-from webapp import create_app
+from webapp import createApp
 
 app = createApp()
 
