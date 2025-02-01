@@ -73,7 +73,6 @@ class OlxSpider(scrapy.Spider):
             if result:
                 yield from self._return(result)
 
-/
     def _errback_httpbin(self, failure):
         # log all failures
         self.logger.error(repr(failure))
