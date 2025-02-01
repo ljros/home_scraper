@@ -24,8 +24,10 @@ class OlxSpider(scrapy.Spider):
         a = 0
         listings = response.css('div.listing-grid-container > div:nth-of-type(2) div')
         for listing in listings:
-            if listing.css('::attr(id)').get(): # skip promoted listings
+            # skip promoted listings
+            if not listing.css('::attr(id)').get() or '-ad-' in listing.css('::attr(id)').get(): 
                  continue
+
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
             image = listing.css('div > div > div:nth-of-type(1) > a > div > div > img::attr(src)').get()
@@ -71,7 +73,7 @@ class OlxSpider(scrapy.Spider):
             if result:
                 yield from self._return(result)
 
-
+/
     def _errback_httpbin(self, failure):
         # log all failures
         self.logger.error(repr(failure))
