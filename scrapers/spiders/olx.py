@@ -24,7 +24,7 @@ class OlxSpider(scrapy.Spider):
 
         listings = response.css('div.listing-grid-container > div:nth-of-type(2) div')
         for listing in listings:
-            if '-ad-' in listing.attrib.get('id', ''):
+            if '-ad-' in listing.css('::attr(id)').get()
                  continue
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
@@ -32,11 +32,11 @@ class OlxSpider(scrapy.Spider):
             short_desc = listing.css('div > div > div:nth-of-type(2) > div > a > h4::text').get()
             price = listing.css('div > div > div:nth-of-type(2) > div > p::text').get()
             address = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > p::text').get()
-            details_pr_m2 = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > div > span::text').getall()
+            details_per_m2 = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > div > span::text').getall()
 
             district = address.split(' -')[0].split(', ')[1]
-            surface = details_pr_m2.split(' - ')[0]
-            price_per_m = details_pr_m2.split(' - ')[1]
+            surface = details_per_m2.split(' - ')[0]
+            price_per_m = details_per_m2.split(' - ')[1]
 
             if "zł" in price:
                 price = price.replace("zł", "").replace(" ", "").replace(",", ".")
