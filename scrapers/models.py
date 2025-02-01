@@ -1,9 +1,8 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.engine.url import URL
+from sqlalchemy import Column, Integer, String, DateTime
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.engine.url import URL
 from datetime import datetime
-
-Base = declarative_base()
+from shared.database import Base
 
 class ApartmentListing(Base):
     __tablename__ = 'apartment_listings'
@@ -11,15 +10,14 @@ class ApartmentListing(Base):
     id = Column(Integer, primary_key=True)
     # Modify these fields based on your spider's items
     image = Column(String)
-    price = Column(String)
+    price = Column(String(50))
     short_desc = Column(String)
-    address = Column(String)
-    rooms = Column(String)
-    surface = Column(String)
-    price_per_m = Column(String)
-    floor = Column(String)
-    seller = Column(String)
-    link = Column(String)
-    
-    # scraped_at = Column(DateTime, default=datetime.utcnow)
-
+    address = Column(String(255))
+    rooms = Column(String(25))
+    surface = Column(String(25))
+    price_per_m = Column(String(25))
+    floor = Column(String(25))
+    seller = Column(String(255))
+    link = Column(String(255))
+    date_created = Column(DateTime)
+    date_last_seen = Column(DateTime)

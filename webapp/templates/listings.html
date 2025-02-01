@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apartment Listings</title>
+    
+    {# We're using Tailwind CSS for easy styling #}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold mb-6">Apartment Listings</h1>
+        
+        {# This loops through our listings from routes.py #}
+        {# The {% %} tags are Jinja2 template syntax - they let us add Python-like code in our HTML #}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for listing in listings %}
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <h2 class="text-xl font-bold">{{ listing.price }} PLN</h2>
+                    <p>{{ listing.address }}</p>
+                    <p>Rooms: {{ listing.rooms }}</p>
+                    <p>Surface: {{ listing.surface }} m²</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
