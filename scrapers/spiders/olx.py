@@ -28,11 +28,11 @@ class OlxSpider(scrapy.Spider):
                  continue
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
-            image = listing.css('div > div > div:nth-of-type(1) > a > div > div > img::attr(src)').getall()
+            image = listing.css('div > div > div:nth-of-type(1) > a > div > div > img::attr(src)').get()
             short_desc = listing.css('div > div > div:nth-of-type(2) > div > a > h4::text').get()
             price = listing.css('div > div > div:nth-of-type(2) > div > p::text').get()
             address = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > p::text').get()
-            details_per_m2 = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > div > span::text').getall()
+            details_per_m2 = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > div > span::text').get()
 
             district = address.split(' -')[0].split(', ')[1]
             surface = details_per_m2.split(' - ')[0]
