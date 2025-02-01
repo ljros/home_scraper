@@ -24,7 +24,7 @@ class OlxSpider(scrapy.Spider):
 
         listings = response.css('div.listing-grid-container > div:nth-of-type(2) div')
         for listing in listings:
-            if '-ad-' in listing.css('::attr(id)').get():
+            if listing.css('::attr(id)').get(): # skip promoted listings
                  continue
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
