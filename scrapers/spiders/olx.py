@@ -21,7 +21,7 @@ class OlxSpider(scrapy.Spider):
             return
 
         results = []
-
+        a = 0
         listings = response.css('div.listing-grid-container > div:nth-of-type(2) div')
         for listing in listings:
             if listing.css('::attr(id)').get(): # skip promoted listings
@@ -33,6 +33,10 @@ class OlxSpider(scrapy.Spider):
             price = listing.css('div > div > div:nth-of-type(2) > div > p::text').get()
             address = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > p::text').get()
             details_per_m2 = listing.css('div > div > div:nth-of-type(2) > div:nth-of-type(3) > div > span::text').get()
+
+            logging.info(a)
+            a += 1
+            logging.info(f"price: {price}")
 
             district = address.split(' -')[0].split(', ')[1]
             surface = details_per_m2.split(' - ')[0]
