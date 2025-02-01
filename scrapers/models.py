@@ -21,4 +21,5 @@ class ApartmentListing(Base):
     short_desc = Column(String(255))
     currency = Column(String(3))
     district = Column(String(50))
+    platform = Column(String(50))
     date_last_seen = Column(DateTime)
