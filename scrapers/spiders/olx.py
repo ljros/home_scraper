@@ -65,6 +65,10 @@ class OlxSpider(scrapy.Spider):
             result['surface'] = surface
             result['price_per_m'] = price_per_m
 
+            result['rooms'] = ""
+            result['floor'] = ""
+            result['seller'] = ""
+
             results.append(result)
 
 
