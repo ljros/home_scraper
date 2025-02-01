@@ -60,6 +60,7 @@ class OtodomSpider(scrapy.Spider):
             seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
 
             result = HomeItems()
+            result['platform'] = 'otodom'
             result['image'] = image
             result['price'] = price
             result['short_desc'] = short_desc

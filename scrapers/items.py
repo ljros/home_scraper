@@ -6,6 +6,7 @@
 import scrapy
 
 class HomeItems(scrapy.Item):
+    platform = scrapy.Field()
     image = scrapy.Field()
     price = scrapy.Field()
     short_desc = scrapy.Field()
@@ -16,6 +17,8 @@ class HomeItems(scrapy.Item):
     floor = scrapy.Field()
     seller = scrapy.Field()
     link = scrapy.Field()
+    currency = scrapy.Field()
+    district = scrapy.Field()
 
 
 class ScrapersItem(scrapy.Item):
