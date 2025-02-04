@@ -75,7 +75,7 @@ class OlxSpider(scrapy.Spider):
         for result in results:
             # yield result 
             # yield from self._return(result)
-            yield_item_with_defaults(result)
+            yield from yield_item_with_defaults(result)
 
     def _errback_httpbin(self, failure):
         # log all failures
