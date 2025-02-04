@@ -71,7 +71,7 @@ class OlxSpider(scrapy.Spider):
 
             results.append(result)
 
-
+        logging.info(f"Found {len(results)} listings on page {response.url}")
         for result in results:
             # yield result 
             # yield from self._return(result)
