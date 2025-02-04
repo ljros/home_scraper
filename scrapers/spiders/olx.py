@@ -2,7 +2,7 @@
 import scrapy
 import logging
 
-from ..items import HomeItems
+from ..items import HomeItems, yield_item_with_defaults
 
 class OlxSpider(scrapy.Spider):
 
@@ -65,16 +65,17 @@ class OlxSpider(scrapy.Spider):
             result['surface'] = surface
             result['price_per_m'] = price_per_m
 
-            result['rooms'] = ""
-            result['floor'] = ""
-            result['seller'] = ""
+            # result['rooms'] = ""
+            # result['floor'] = ""
+            # result['seller'] = ""
 
             results.append(result)
 
 
         for result in results:
-            yield result 
+            # yield result 
             # yield from self._return(result)
+            yield_item_with_defaults(result)
 
     def _errback_httpbin(self, failure):
         # log all failures
@@ -87,4 +88,4 @@ class OlxSpider(scrapy.Spider):
                 empty = False
                 break
         if not empty:
-            yield {k: v for k, v in results.items() if v}
+            yield {k: v for k, v in results.items()}
