@@ -30,11 +30,6 @@ class OlxSpider(scrapy.Spider):
 
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
-            if "otodom.pl" in link:
-                continue # skip crosslisted listings for now as the ones on olx have less info
-            else:
-                link = 'https://www.olx.pl' + link
-
             image = listing.css('div > div > div:nth-of-type(1) > a > div > div > img::attr(src)').get()
             short_desc = listing.css('div > div > div:nth-of-type(2) > div > a > h4::text').get()
             price = listing.css('div > div > div:nth-of-type(2) > div > p::text').get()
@@ -43,6 +38,10 @@ class OlxSpider(scrapy.Spider):
 
             if address is None:
                 continue
+            if "otodom.pl" in link:
+                continue # skip crosslisted listings for now as the ones on olx have less info
+            else:
+                link = 'https://www.olx.pl' + link
             
             district = address.split(' -')[0].split(', ')[1]
             surface = details_per_m2.split(' - ')[0]
