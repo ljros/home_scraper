@@ -2,7 +2,7 @@
 import scrapy
 import logging
 
-from ..items import HomeItems
+from ..items import HomeItems, yield_item_with_defaults
 
 class OtodomSpider(scrapy.Spider):
 
@@ -16,31 +16,25 @@ class OtodomSpider(scrapy.Spider):
     allowed_domains = ['otodom.pl']
 
     def parse(self, response):
-        #feedbacks first
 
         if response.status == 307:
             return
 
         results = []
 
-
         listings = response.css('div[data-cy="search.listing.organic"] ul li')
         for listing in listings:
-            link, image, price, short_desc, address, rooms, surface, price_per_m, floor, seller = '','','','','','','','','',''
             if not (listing.css("article").get()):
                 continue
             
             link = listing.css('article > section > div:nth-of-type(2) >  a::attr(href)').get()
-            image = listing.css('article > section > div:nth-of-type(1) > div > div > div > div > div > div > div:nth-of-type(1) > a > img::attr(src)').getall()
+            image = listing.css('article > section > div:nth-of-type(1) > div > div > div > div > div > div > div:nth-of-type(1) > a > img::attr(src)').get()
             price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > span::text').get()
             short_desc = listing.css('article > section > div:nth-of-type(2) > a > p::text').get()
             address = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(2) > p::text').get()
 
             details_dt = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dt::text').getall()
             details_dd = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dd::text').getall()
-
-            logging.info(details_dt)
-            logging.info(details_dd)
 
             if 'Liczba pokoi' in details_dt:
                 rooms = details_dd[0]
@@ -74,21 +68,11 @@ class OtodomSpider(scrapy.Spider):
 
             results.append(result)
 
-
+        logging.info(f"Found {len(results)} listings on page {response.url}")
         for result in results:
-            if result:
-                yield from self._return(result)
+            yield from yield_item_with_defaults(result)
 
 
     def _errback_httpbin(self, failure):
         # log all failures
         self.logger.error(repr(failure))
-
-    def _return(self, results):
-        empty = True
-        for x in results.items():
-            if x != "" and x != 0:
-                empty = False
-                break
-        if not empty:
-            yield {k: v for k, v in results.items() if v}

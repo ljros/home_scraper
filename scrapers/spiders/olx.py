@@ -30,6 +30,11 @@ class OlxSpider(scrapy.Spider):
 
 
             link = listing.css('div > div > div:nth-of-type(1) >  a::attr(href)').get()
+            if "otodom.pl" in link:
+                continue # skip crosslisted listings for now as the ones on olx have less info
+            else:
+                link = 'https://www.olx.pl' + link
+
             image = listing.css('div > div > div:nth-of-type(1) > a > div > div > img::attr(src)').get()
             short_desc = listing.css('div > div > div:nth-of-type(2) > div > a > h4::text').get()
             price = listing.css('div > div > div:nth-of-type(2) > div > p::text').get()
@@ -54,7 +59,7 @@ class OlxSpider(scrapy.Spider):
             price_per_m = price_per_m.replace(" zł/m²", "").replace(",", ".")
 
             result = HomeItems()
-            result['platform'] = 'olx'
+            result['platform'] = 'olx' # TODO - different platform for otodom crosslistings
             result['link'] = link
             result['image'] = image
             result['short_desc'] = short_desc
@@ -65,27 +70,12 @@ class OlxSpider(scrapy.Spider):
             result['surface'] = surface
             result['price_per_m'] = price_per_m
 
-            # result['rooms'] = ""
-            # result['floor'] = ""
-            # result['seller'] = ""
-
             results.append(result)
 
         logging.info(f"Found {len(results)} listings on page {response.url}")
         for result in results:
-            # yield result 
-            # yield from self._return(result)
             yield from yield_item_with_defaults(result)
 
     def _errback_httpbin(self, failure):
         # log all failures
         self.logger.error(repr(failure))
-
-    def _return(self, results):
-        empty = True
-        for x in results.items():
-            if x != "" and x != 0:
-                empty = False
-                break
-        if not empty:
-            yield {k: v for k, v in results.items()}
