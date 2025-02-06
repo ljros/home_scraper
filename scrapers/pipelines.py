@@ -10,8 +10,8 @@ class SQLAlchemyPipeline:
         session = SessionLocal()
         try:
             stmt = text("""
-                INSERT INTO apartment_listings (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link)
-                VALUES (:image, :price, :short_desc, :address, :rooms, :surface, :price_per_m, :floor, :seller, :link)
+                INSERT INTO apartment_listings (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link, district, currency, platform, date_last_seen)
+                VALUES (:image, :price, :short_desc, :address, :rooms, :surface, :price_per_m, :floor, :seller, :link, :district, :currency, :platform, CURRENT_TIMESTAMP)
                 ON CONFLICT (link)
                 DO UPDATE SET 
                     image = EXCLUDED.image,
@@ -24,6 +24,9 @@ class SQLAlchemyPipeline:
                     floor = EXCLUDED.floor,
                     seller = EXCLUDED.seller,
                     link = EXCLUDED.link,
+                    district = EXCLUDED.district,
+                    currency = EXCLUDED.currency,
+                    platform = EXCLUDED.platform,
                     date_last_seen = CURRENT_TIMESTAMP
                 RETURNING id, (xmax = 0) as is_insert
             """)

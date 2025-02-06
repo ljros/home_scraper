@@ -41,7 +41,7 @@
         <tbody>
             {% for listing in listings %}
             <tr>
-                <td><img src="{{ listing.image }}" alt="Apartment Image" width="100"></td>
+                <td><img src="{{ listing.image | urlencode}}" alt="Apartment Image" width="100"></td>
                 <td>{{ listing.price }}</td>
                 <td>{{ listing.short_desc }}</td>
                 <td>{{ listing.address }}</td>
