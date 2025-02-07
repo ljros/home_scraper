@@ -21,7 +21,7 @@ class OlxSpider(scrapy.Spider):
             return
 
         results = []
-
+        script_content = response.css("#olx-init-config::text").get()
         parsed_state = self.extract_prerendered_state(script_content)
         offers = self.extract_offers(parsed_state)
         print(offers)
