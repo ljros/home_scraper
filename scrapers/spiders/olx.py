@@ -26,9 +26,9 @@ class OlxSpider(scrapy.Spider):
         script_content = response.css("#olx-init-config::text").get()
         parsed_state = self.extract_prerendered_state(script_content)
         offers = self.extract_offers(parsed_state)
-        print(json.dumps(parsed, indent=4))
+        print(json.dumps(offers, indent=4))
         with open('olx.json', 'w') as f:
-            json.dump(parsed_state, f)
+            json.dump(offers, f)
         
         
     def extract_prerendered_state(self, script_content):
