@@ -27,7 +27,7 @@ class OlxSpider(scrapy.Spider):
         print(offers)
         
         
-    def extract_prerendered_state(script_content):
+    def extract_prerendered_state(self, script_content):
         patterns = [
             r'window\.__PRERENDERED_STATE__\s*=\s*(["\'])(.*?)\1\s*;'
         ]
@@ -57,7 +57,7 @@ class OlxSpider(scrapy.Spider):
         
         raise ValueError("Could not find and parse configuration")
 
-    def extract_offers(json_data):
+    def extract_offers(self, json_data):
         try:
             ads_list = json_data.get('listing', {}).get('listing', {}).get('ads', []),
 
