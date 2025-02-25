@@ -1,6 +1,8 @@
 
 import scrapy
 import logging
+import json
+import re
 
 from ..items import HomeItems, yield_item_with_defaults
 
@@ -21,14 +23,15 @@ class OlxSpider(scrapy.Spider):
             return
 
         results = []
-
+        script_content = response.css("#olx-init-config::text").get()
         parsed_state = self.extract_prerendered_state(script_content)
         offers = self.extract_offers(parsed_state)
-        print(offers)
+        print(json.dumps(offers, indent=4))
+        with open('olx.json', 'w') as f:
+            json.dump(offers, f)
         
         
-        
-    def extract_prerendered_state(script_content):
+    def extract_prerendered_state(self, script_content):
         patterns = [
             r'window\.__PRERENDERED_STATE__\s*=\s*(["\'])(.*?)\1\s*;'
         ]
@@ -58,7 +61,7 @@ class OlxSpider(scrapy.Spider):
         
         raise ValueError("Could not find and parse configuration")
 
-    def extract_offers(json_data):
+    def extract_offers(self, json_data):
         try:
             ads_list = json_data.get('listing', {}).get('listing', {}).get('ads', []),
 
