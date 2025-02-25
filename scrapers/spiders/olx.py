@@ -27,6 +27,7 @@ class OlxSpider(scrapy.Spider):
         print(offers)
         
         
+        
     def extract_prerendered_state(script_content):
         patterns = [
             r'window\.__PRERENDERED_STATE__\s*=\s*(["\'])(.*?)\1\s*;'
