@@ -52,7 +52,7 @@ class OlxSpider(scrapy.Spider):
             result['market'] = next((param["normalizedValue"] for param in params if param["key"] == "market"), None)
             result['builttype'] = next((param["normalizedValue"] for param in params if param["key"] == "builttype"), None)
             result['surface'] = next((param["normalizedValue"] for param in params if param["key"] == "m"), None)
-            result['rooms'] = w2n.word_to_num(next((param["normalizedValue"] for param in params if param["key"] == "rooms_select"), None))
+            result['rooms'] = w2n.word_to_num(next((param["normalizedValue"] for param in params if param["key"] == "rooms"), None))
             result['price'] = price_info.get('value')
             result['currency'] = price_info.get('currencyCode')
             result['negotiable'] = price_info.get('negotiable')
