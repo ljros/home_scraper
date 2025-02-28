@@ -49,7 +49,7 @@ class OlxSpider(scrapy.Spider):
             result['listing_created_time'] = offer.get('createdTime')
             result['listing_last_refresh_time'] = offer.get('lastRefreshTime')
             result['price_per_m'] = next((param["normalizedValue"] for param in params if param["key"] == "price_per_m"), None)
-            result['floor'] = next((param["value"] for param in params if param["key"] == "floor_select"), None)    
+            result['floor'] = next((param["normalizedValue"] for param in params if param["key"] == "floor_select"), None).split("_")[1]
             result['furniture'] = 1 if next((param["normalizedValue"] for param in params if param["key"] == "furniture"), None) == "yes" else 0
             result['market'] = next((param["normalizedValue"] for param in params if param["key"] == "market"), None)
             result['builttype'] = next((param["normalizedValue"] for param in params if param["key"] == "builttype"), None)
