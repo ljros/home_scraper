@@ -5,7 +5,7 @@ import json
 import re
 from word2number import w2n
 
-from items import OlxListingItem, yield_item_with_defaults
+from scrapers.items import OlxListingItem, yield_item_with_defaults
 
 class OlxSpider(scrapy.Spider):
 
@@ -46,13 +46,13 @@ class OlxSpider(scrapy.Spider):
             result['external_link'] = offer.get('externalUrl')
             result['listing_created_time'] = offer.get('createdTime')
             result['listing_last_refresh_time'] = offer.get('lastRefreshTime')
-            result['price_per_m'] = next((param["normalizedValue"] for param in data["params"] if param["key"] == "price_per_m"), None)
-            result['floor'] = next((param["value"] for param in data["params"] if param["key"] == "floor_select"), None)    
-            result['furniture'] = 1 if next((param["normalizedValue"] for param in data["params"] if param["key"] == "furniture"), None) == "yes" else 0
-            result['market'] = next((param["normalizedValue"] for param in data["params"] if param["key"] == "market"), None)
-            result['builttype'] = next((param["normalizedValue"] for param in data["params"] if param["key"] == "builttype"), None)
-            result['surface'] = next((param["normalizedValue"] for param in data["params"] if param["key"] == "m"), None)
-            result['rooms'] = w2n.word_to_num(next((param["normalizedValue"] for param in data["params"] if param["key"] == "rooms_select"), None))
+            result['price_per_m'] = next((param["normalizedValue"] for param in params if param["key"] == "price_per_m"), None)
+            result['floor'] = next((param["value"] for param in params if param["key"] == "floor_select"), None)    
+            result['furniture'] = 1 if next((param["normalizedValue"] for param in params if param["key"] == "furniture"), None) == "yes" else 0
+            result['market'] = next((param["normalizedValue"] for param in params if param["key"] == "market"), None)
+            result['builttype'] = next((param["normalizedValue"] for param in params if param["key"] == "builttype"), None)
+            result['surface'] = next((param["normalizedValue"] for param in params if param["key"] == "m"), None)
+            result['rooms'] = w2n.word_to_num(next((param["normalizedValue"] for param in params if param["key"] == "rooms_select"), None))
             result['price'] = price_info.get('value')
             result['currency'] = price_info.get('currencyCode')
             result['negotiable'] = price_info.get('negotiable')
