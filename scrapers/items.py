@@ -4,7 +4,8 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 from scrapy.item import Item, Field
-from ..models import OlxListing, OtodomListing
+from scrapers.models import OlxListing, OtodomListing
+from sqlalchemy import inspect
 
 # Dynamically create a Scrapy Item class from a SQLAlchemy model
 def create_model_item(model_class):
