@@ -37,7 +37,8 @@ class OlxSpider(scrapy.Spider):
             price_info = offer.get('price', {}).get('regularPrice', {})
             location = offer.get('location', {})
 
-            result ['platform'] = 'olx'
+            result = {}
+            result['platform'] = 'olx'
             result['title'] = offer.get('title')
             result['description'] = description
             result['map_link'] = f"https://www.openstreetmap.org/#map={map_data['zoom']}/{map_data['lat']}/{map_data['lon']}" if map_data else None
@@ -61,8 +62,11 @@ class OlxSpider(scrapy.Spider):
             result['is_business'] = offer.get('isBusiness')
             result['images'] = json.dumps(offer.get('photos', []))
             result['image'] = offer.get('photos', [])[0] if offer.get('photos', []) else None
+            results.append(result)
 
-        yield from yield_item_with_defaults(results, OlxListingItem)
+        logging.info(f"Found {len(results)} listings on page {response.url}")
+        for result in results:
+            yield from yield_item_with_defaults(result, OlxListingItem)
 
         
         
