@@ -13,6 +13,7 @@ class OtodomSpider(scrapy.Spider):
 
     handle_httpstatus_list = [410, 307, 301]
     name = 'otodom'
+    table_name = 'otodom_listings'
     allowed_domains = ['otodom.pl']
 
     def parse(self, response):

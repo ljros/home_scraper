@@ -16,6 +16,8 @@ class OlxSpider(scrapy.Spider):
 
     handle_httpstatus_list = [410, 307, 301]
     name = 'olx'
+    table_name = 'olx_listings'
+
     allowed_domains = ['olx.pl']
 
     def parse(self, response):
