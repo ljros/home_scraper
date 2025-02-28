@@ -37,7 +37,7 @@ class OlxSpider(scrapy.Spider):
             price_info = offer.get('price', {}).get('regularPrice', {})
             location = offer.get('location', {})
 
-            result = {}
+            result = OlxListingItem()
             result['platform'] = 'olx'
             result['title'] = offer.get('title')
             result['description'] = description

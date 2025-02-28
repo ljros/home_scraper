@@ -2,7 +2,7 @@
 import scrapy
 import logging
 
-from ..items import HomeItems, yield_item_with_defaults
+from ..items import OtodomListingItem, yield_item_with_defaults
 
 class OtodomSpider(scrapy.Spider):
 
@@ -53,7 +53,7 @@ class OtodomSpider(scrapy.Spider):
 
             seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
 
-            result = HomeItems()
+            result = OtodomListingItem()
             result['platform'] = 'otodom'
             result['image'] = image
             result['price'] = price
