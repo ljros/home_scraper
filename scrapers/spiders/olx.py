@@ -102,7 +102,7 @@ class OlxSpider(scrapy.Spider):
 
     def extract_offers(self, json_data):
         try:
-            ads_list = json_data.get('listing', {}).get('listing', {}).get('ads', []),
+            ads_list = json_data.get('listing', {}).get('listing', {}).get('ads', [])
 
             if ads_list:
                 return ads_list

@@ -2,7 +2,7 @@
 import scrapy
 import logging
 
-from ..items import OtodomListingItem, yield_item_with_defaults
+from scrapers.items import OtodomListingItem, yield_item_with_defaults
 
 class OtodomSpider(scrapy.Spider):
 
