@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text, Numeric, Boolean
 from datetime import datetime
 from shared.database import Base
 
