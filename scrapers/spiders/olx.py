@@ -5,7 +5,7 @@ import json
 import re
 from word2number import w2n
 
-from ..items import OlxListingItem, yield_item_with_defaults
+from items import OlxListingItem, yield_item_with_defaults
 
 class OlxSpider(scrapy.Spider):
 
