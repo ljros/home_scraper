@@ -37,14 +37,15 @@ class OlxListing(Base):
 
 
 class OtodomListing(Base):
-    __tablename__ = 'apartment_listings' #todo change
+    __tablename__ = 'otodom_listings' #todo change
 
     id = Column(Integer, primary_key=True)
 
     link = Column(String(255))
     image = Column(Text)
     price = Column(Numeric(12, 2))
-    address = Column(String(255))
+    city = Column(String(50))
+    district = Column(String(50))
     rooms = Column(String(25))
     surface = Column(Numeric(4, 2))
     price_per_m = Column(Numeric(6, 2))
@@ -54,4 +55,4 @@ class OtodomListing(Base):
     currency = Column(String(3))
     district = Column(String(50))
     platform = Column(String(50))
-    date_last_seen = Column(DateTime)
+    # date_last_seen = Column(DateTime)

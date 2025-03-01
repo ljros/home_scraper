@@ -37,6 +37,8 @@ class OtodomSpider(scrapy.Spider):
             details_dt = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dt::text').getall()
             details_dd = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dd::text').getall()
 
+            rooms = surface = price_per_m = floor = None
+
             if 'Liczba pokoi' in details_dt:
                 rooms = details_dd[0]
                 del details_dd[0]
@@ -59,19 +61,20 @@ class OtodomSpider(scrapy.Spider):
             result['image'] = image
             result['price'] = price
             result['short_desc'] = short_desc
-            result['address'] = address
             result['rooms'] = rooms
             result['surface'] = surface
             result['price_per_m'] = price_per_m
             result['floor'] = floor
             result['seller'] = seller
             result['link'] = link
+            result['city'] = address.split(", ")[0] if address else None
+            result['district'] = address.split(", ")[1].split(" -")[0] if address else None
 
             results.append(result)
 
         logging.info(f"Found {len(results)} listings on page {response.url}")
         for result in results:
-            yield from yield_item_with_defaults(result)
+            yield from yield_item_with_defaults(result, OtodomListingItem)
 
 
     def _errback_httpbin(self, failure):
