@@ -41,6 +41,8 @@ class OtodomSpider(scrapy.Spider):
 
             if 'Liczba pokoi' in details_dt:
                 rooms = details_dd[0]
+                if "pokoi" in rooms or "pokój" in rooms or "pokoje" in rooms:
+                    rooms = rooms.split(" ")[0]
                 del details_dd[0]
             if 'Powierzchnia' in details_dt:
                 surface = " ".join([details_dd[0], details_dd[1], details_dd[2]])
