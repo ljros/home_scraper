@@ -88,7 +88,7 @@ class OlxSpider(scrapy.Spider):
                                                 .replace("\\'", '"') \
                                                 .replace('\\\\', '\\')
                     
-                    # parsed_data = json.loads(unescaped_json)
+                    parsed_data = json.loads(unescaped_json)
                     
                     return parsed_data
                 
