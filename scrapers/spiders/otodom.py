@@ -45,7 +45,7 @@ class OtodomSpider(scrapy.Spider):
                     rooms = rooms.split(" ")[0]
                 del details_dd[0]
             if 'Powierzchnia' in details_dt:
-                surface = " ".join([details_dd[0], details_dd[1], details_dd[2]])
+                surface = details_dd[0]
                 del details_dd[0:3]
             if 'Cena za metr kwadratowy' in details_dt:
                 price_per_m = " ".join([details_dd[0], details_dd[2]]) # .replace("\xa0129\xa0", "")

@@ -47,7 +47,7 @@ class OtodomListing(Base):
     city = Column(String(50))
     district = Column(String(50))
     rooms = Column(Integer)
-    surface = Column(Numeric(4, 2))
+    surface = Column(Numeric(10, 2))
     price_per_m = Column(Numeric(6, 2))
     floor = Column(Integer)
     seller = Column(String(255))
