@@ -54,7 +54,12 @@ class OtodomSpider(scrapy.Spider):
                 price_per_m = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0:3]
             if 'Piętro' in details_dt:
-                floor = details_dd[0]
+                if floor is "Parter":
+                    floor = 0
+                elif "10+" in floor:
+                    floor = 10
+                else:
+                    floor = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0]
             if link:
                 link = 'https://www.otodom.pl' + link
