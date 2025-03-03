@@ -1,6 +1,8 @@
 
 import scrapy
 import logging
+import re
+import unicodedata
 
 from scrapers.items import OtodomListingItem, yield_item_with_defaults
 
@@ -29,15 +31,16 @@ class OtodomSpider(scrapy.Spider):
                 continue
             
             link = listing.css('article > section > div:nth-of-type(2) >  a::attr(href)').get()
-            image = listing.css('article > section > div:nth-of-type(1) > div > div > div > div > div > div > div:nth-of-type(1) > a > img::attr(src)').get()
-            price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > span::text').get()
+            image = listing.css('article > section > div:nth-of-type(1) > div > div:nth-of-type(2) > div > div > div:nth-of-type(1) > div > div:nth-of-type(1) > a > img::attr(src)').get()
             short_desc = listing.css('article > section > div:nth-of-type(2) > a > p::text').get()
             address = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(2) > p::text').get()
+            seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
 
             details_dt = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dt::text').getall()
             details_dd = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dd::text').getall()
+            price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span::text').get()
 
-            rooms = surface = price_per_m = floor = None
+            rooms = surface = price_per_m = floor = currency = None
 
             if 'Liczba pokoi' in details_dt:
                 rooms = details_dd[0]
@@ -48,7 +51,7 @@ class OtodomSpider(scrapy.Spider):
                 surface = details_dd[0]
                 del details_dd[0:3]
             if 'Cena za metr kwadratowy' in details_dt:
-                price_per_m = " ".join([details_dd[0], details_dd[2]]) # .replace("\xa0129\xa0", "")
+                price_per_m = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0:3]
             if 'Piętro' in details_dt:
                 floor = details_dd[0]
@@ -56,7 +59,9 @@ class OtodomSpider(scrapy.Spider):
             if link:
                 link = 'https://www.otodom.pl' + link
 
-            seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
+            price = unicodedata.normalize("NFKC", price)
+            price = re.sub(r'\D', '', price)
+
 
             result = OtodomListingItem()
             result['platform'] = 'otodom'
