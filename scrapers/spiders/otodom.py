@@ -40,6 +40,8 @@ class OtodomSpider(scrapy.Spider):
             details_dd = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dd::text').getall()
             price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span::text').get()
 
+            if not details_dd:
+                continue
             rooms = surface = price_per_m = floor = currency = None
 
             if 'Liczba pokoi' in details_dt:
