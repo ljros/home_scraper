@@ -56,7 +56,7 @@ class OtodomSpider(scrapy.Spider):
             if 'Piętro' in details_dt:
                 if floor is "Parter":
                     floor = 0
-                elif "10+" in floor:
+                elif floor and "10+" in floor:
                     floor = 10
                 else:
                     floor = re.sub(r'\D', '', details_dd[0])
