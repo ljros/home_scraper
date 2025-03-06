@@ -6,3 +6,4 @@ flask
 gunicorn
 honcho
 apscheduler==3.10.1
+word2number

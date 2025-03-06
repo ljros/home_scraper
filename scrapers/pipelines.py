@@ -7,26 +7,22 @@ class SQLAlchemyPipeline:
         init_db()
 
     def process_item(self, item, spider):
-        session = SessionLocal()
+
+        table_name = getattr(spider, 'table_name', 'apartment_listings')
+        
+        columns = item.keys()
+        column_list = ", ".join(columns)
+        placeholders = ", ".join([f":{col}" for col in columns])
+        updates = ", ".join([f"{col} = EXCLUDED.{col}" for col in columns])
+        
+        session = SessionLocal()        
         try:
-            stmt = text("""
-                INSERT INTO apartment_listings (image, price, short_desc, address, rooms, surface, price_per_m, floor, seller, link, district, currency, platform, date_last_seen)
-                VALUES (:image, :price, :short_desc, :address, :rooms, :surface, :price_per_m, :floor, :seller, :link, :district, :currency, :platform, CURRENT_TIMESTAMP)
+            stmt = text(f"""
+                INSERT INTO {table_name} ({column_list}, date_last_seen)
+                VALUES ({placeholders}, CURRENT_TIMESTAMP)
                 ON CONFLICT (link)
                 DO UPDATE SET 
-                    image = EXCLUDED.image,
-                    price = EXCLUDED.price,
-                    short_desc = EXCLUDED.short_desc,
-                    address = EXCLUDED.address,
-                    rooms = EXCLUDED.rooms,
-                    surface = EXCLUDED.surface,
-                    price_per_m = EXCLUDED.price_per_m,
-                    floor = EXCLUDED.floor,
-                    seller = EXCLUDED.seller,
-                    link = EXCLUDED.link,
-                    district = EXCLUDED.district,
-                    currency = EXCLUDED.currency,
-                    platform = EXCLUDED.platform,
+                    {updates},
                     date_last_seen = CURRENT_TIMESTAMP
                 RETURNING id, (xmax = 0) as is_insert
             """)
@@ -35,15 +31,15 @@ class SQLAlchemyPipeline:
             row = result.fetchone()
 
             if row.is_insert:
-                spider.logger.info(f"New listing added: {item.get('link')}")
+                spider.logger.info(f"New {table_name} record added: {item.get('link')}")
             else:
-                spider.logger.info(f"Listing updated: {item.get('link')}")
+                spider.logger.info(f"{table_name} record updated: {item.get('link')}")
 
             session.commit()
 
         except Exception as e:
             session.rollback()
-            spider.logger.error(f"Failed to process item: {e}")
+            spider.logger.error(f"Failed to process item for {table_name}: {e}")
         finally:
             session.close()
         return item

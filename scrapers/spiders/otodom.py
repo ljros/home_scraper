@@ -1,8 +1,10 @@
 
 import scrapy
 import logging
+import re
+import unicodedata
 
-from ..items import HomeItems, yield_item_with_defaults
+from scrapers.items import OtodomListingItem, yield_item_with_defaults
 
 class OtodomSpider(scrapy.Spider):
 
@@ -13,6 +15,7 @@ class OtodomSpider(scrapy.Spider):
 
     handle_httpstatus_list = [410, 307, 301]
     name = 'otodom'
+    table_name = 'otodom_listings'
     allowed_domains = ['otodom.pl']
 
     def parse(self, response):
@@ -28,49 +31,64 @@ class OtodomSpider(scrapy.Spider):
                 continue
             
             link = listing.css('article > section > div:nth-of-type(2) >  a::attr(href)').get()
-            image = listing.css('article > section > div:nth-of-type(1) > div > div > div > div > div > div > div:nth-of-type(1) > a > img::attr(src)').get()
-            price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > span::text').get()
+            image = listing.css('article > section > div:nth-of-type(1) > div > div:nth-of-type(2) > div > div > div:nth-of-type(1) > div > div:nth-of-type(1) > a > img::attr(src)').get()
             short_desc = listing.css('article > section > div:nth-of-type(2) > a > p::text').get()
             address = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(2) > p::text').get()
+            seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
 
             details_dt = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dt::text').getall()
             details_dd = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(3) > dl > dd::text').getall()
+            price = listing.css('article > section > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > span::text').get()
+
+            if not details_dd:
+                continue
+            rooms = surface = price_per_m = floor = currency = None
 
             if 'Liczba pokoi' in details_dt:
                 rooms = details_dd[0]
+                if "pokoi" in rooms or "pokój" in rooms or "pokoje" in rooms:
+                    rooms = rooms.split(" ")[0]
                 del details_dd[0]
             if 'Powierzchnia' in details_dt:
-                surface = " ".join([details_dd[0], details_dd[1], details_dd[2]])
+                surface = details_dd[0]
                 del details_dd[0:3]
             if 'Cena za metr kwadratowy' in details_dt:
-                price_per_m = " ".join([details_dd[0], details_dd[2]]) # .replace("\xa0129\xa0", "")
+                price_per_m = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0:3]
             if 'Piętro' in details_dt:
-                floor = details_dd[0]
+                if floor is "Parter":
+                    floor = 0
+                elif floor and "10+" in floor:
+                    floor = 10
+                else:
+                    floor = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0]
             if link:
                 link = 'https://www.otodom.pl' + link
 
-            seller = listing.css(' article > section > div:nth-of-type(2) > div:nth-of-type(5) > div > div::text').get()
+            price = unicodedata.normalize("NFKC", price)
+            price = re.sub(r'\D', '', price)
 
-            result = HomeItems()
+
+            result = OtodomListingItem()
             result['platform'] = 'otodom'
             result['image'] = image
             result['price'] = price
             result['short_desc'] = short_desc
-            result['address'] = address
             result['rooms'] = rooms
             result['surface'] = surface
             result['price_per_m'] = price_per_m
             result['floor'] = floor
             result['seller'] = seller
             result['link'] = link
+            result['city'] = address.split(", ")[0] if address else None
+            result['district'] = address.split(", ")[1].split(" -")[0] if address else None
 
             results.append(result)
 
         logging.info(f"Found {len(results)} listings on page {response.url}")
         for result in results:
-            yield from yield_item_with_defaults(result)
+            yield from yield_item_with_defaults(result, OtodomListingItem)
 
 
     def _errback_httpbin(self, failure):

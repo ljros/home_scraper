@@ -3,31 +3,27 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy.item import Item, Field
+from scrapers.models import OlxListing, OtodomListing
+from sqlalchemy import inspect
 
-class HomeItems(scrapy.Item):
-    platform = scrapy.Field()
-    image = scrapy.Field()
-    price = scrapy.Field()
-    short_desc = scrapy.Field()
-    address = scrapy.Field()
-    rooms = scrapy.Field()
-    surface = scrapy.Field()
-    price_per_m = scrapy.Field()
-    floor = scrapy.Field()
-    seller = scrapy.Field()
-    link = scrapy.Field()
-    currency = scrapy.Field()
-    district = scrapy.Field()
+# Dynamically create a Scrapy Item class from a SQLAlchemy model
+def create_model_item(model_class):
+    fields = {}
+    for column in inspect(model_class).columns:
+        fields[column.name] = Field()
+    
+    return type(f"{model_class.__name__}Item", (Item,), fields)
 
-def yield_item_with_defaults(item: scrapy.Item):
-    for field_name in item.fields:
-        value = item.get(field_name)
+OlxListingItem = create_model_item(OlxListing)
+OtodomListingItem = create_model_item(OtodomListing)
+
+def yield_item_with_defaults(item_dict, model_item_class):
+    model_item = model_item_class()
+    for key, value in item_dict.items():
         if value is None or str(value).strip() == "":
-            item[field_name] = None
-    yield item
-
-class ScrapersItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+            model_item[key] = None
+        else:
+            model_item[key] = value
+    
+    yield model_item
