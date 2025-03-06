@@ -2,18 +2,21 @@ import os
 import random
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.triggers.interval import IntervalTrigger
 import pytz
 from datetime import datetime, timedelta
+from email.email_reporter import MailgunReporter
+
 
 SCRAPE_START_HOUR = int(os.getenv("SCRAPE_START_HOUR", 9))
 SCRAPE_END_HOUR = int(os.getenv("SCRAPE_END_HOUR", 21))
 SCRAPES_PER_DAY = int(os.getenv("SCRAPES_PER_DAY", 4))
+SEND_REPORT_HOUR = int(os.getenv("SEND_REPORT_HOUR"))
 TIMEZONE = pytz.timezone(os.getenv("TIMEZONE", "Europe/Paris"))
 
 class DynamicScrapeScheduler:
     def __init__(self, spider_names):
         self.spider_names = spider_names
+        self.reporter = MailgunReporter()
         self.daily_trigger_times = {}
     
     def generate_daily_trigger_times(self):
@@ -66,6 +69,7 @@ class DynamicScrapeScheduler:
             for spider in self.spider_names
         }
         
+        # spiders
         for spider, trigger_times in self.daily_trigger_times.items():
             for i, trigger_time in enumerate(trigger_times, 1):
                 scheduler.add_job(
@@ -81,6 +85,18 @@ class DynamicScrapeScheduler:
                 )
                 print(f"Scheduled {spider} trigger {i} at {trigger_time.strftime('%I:%M:%S %p')}")
         
+        # email
+        if SEND_REPORT_HOUR:
+            scheduler.add_job(
+                func=self.send_daily_email_report,
+                trigger=CronTrigger(hour=SEND_REPORT_HOUR, minute=0, second=0, timezone=TIMEZONE),
+                id='daily_email_report',
+                replace_existing=True
+            )
+            print(f"Scheduled daily email report at {SEND_REPORT_HOUR}:00:00")
+        else:
+            print("Daily email report disabled")
+
         scheduler.add_job(
             func=self.regenerate_daily_schedules,
             trigger=CronTrigger(hour=0, minute=0, second=0, timezone=TIMEZONE),
@@ -97,9 +113,22 @@ class DynamicScrapeScheduler:
             for spider in self.spider_names
         }
         
-        # print("New daily schedule:")
-        # for spider, times in self.daily_trigger_times.items():
-        #     print(f"{spider}: {[t.strftime('%I:%M:%S %p') for t in times]}")
+    def send_daily_email_report(self):
+        """
+        Generate and send daily email report
+        """
+        try:
+            current_time = datetime.now(TIMEZONE)
+            print(f"Generating daily email report at {current_time}")
+            
+            result = self.reporter.send_daily_report()
+            
+            if result:
+                print(f"Daily email report sent successfully at {current_time}")
+            else:
+                print(f"Failed to send daily email report at {current_time}")
+        except Exception as e:
+            print(f"Exception occurred while sending daily email report: {e}")
 
 def main():
     spider_names = ['olx', 'otodom']
