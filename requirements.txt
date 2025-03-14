@@ -1,5 +1,5 @@
 scrapy==2.12
-pip==23.2.1
+pip==23.3
 sqlalchemy
 psycopg2-binary
 flask
