@@ -11,6 +11,7 @@ SCRAPE_START_HOUR = int(os.getenv("SCRAPE_START_HOUR", 9))
 SCRAPE_END_HOUR = int(os.getenv("SCRAPE_END_HOUR", 21))
 SCRAPES_PER_DAY = int(os.getenv("SCRAPES_PER_DAY", 4))
 SEND_REPORT_HOUR = int(os.getenv("SEND_REPORT_HOUR"))
+SEND_REPORT_MINUTE = int(os.getenv("SEND_REPORT_MINUTE", 0))
 TIMEZONE = pytz.timezone(os.getenv("TIMEZONE", "Europe/Paris"))
 
 class DynamicScrapeScheduler:
@@ -89,7 +90,7 @@ class DynamicScrapeScheduler:
         if SEND_REPORT_HOUR:
             scheduler.add_job(
                 func=self.send_daily_email_report,
-                trigger=CronTrigger(hour=SEND_REPORT_HOUR, minute=0, second=0, timezone=TIMEZONE),
+                trigger=CronTrigger(hour=SEND_REPORT_HOUR, minute=SEND_REPORT_MINUTE, second=0, timezone=TIMEZONE),
                 id='daily_email_report',
                 replace_existing=True
             )
