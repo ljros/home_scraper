@@ -7,7 +7,7 @@ class MailgunReporter:
     def __init__(self):
         self.api_key = os.environ.get("MAILGUN_API_KEY")
         self.domain = os.environ.get("MAILGUN_DOMAIN")
-        self.from_email = os.environ.get("FROM_EMAIL", f"Scraper <mailgun@{MAILGUN_DOMAIN}>")
+        self.from_email = os.environ.get("FROM_EMAIL")
         self.to_email = os.environ.get("TO_EMAIL")
         self.session = SessionLocal()
 
@@ -59,7 +59,7 @@ class MailgunReporter:
         html += "</table>"
         return html
     
-    def send_email(self, to_email, subject, html_content):
+    def send_email(self, subject, html_content):
         """
         Send an email with the provided content using Mailgun API
         """
@@ -74,7 +74,7 @@ class MailgunReporter:
             # Request data
             data = {
                 "from": self.from_email,
-                "to": to_email,
+                "to": self.to_email,
                 "subject": subject,
                 "html": html_content
             }
@@ -126,7 +126,7 @@ class MailgunReporter:
             
             # Send the email
             subject = f"Daily Scraper Report - {datetime.now(TIMEZONE).strftime('%Y-%m-%d')}"
-            return self.send_email(TO_EMAIL, subject, html_content)
+            return self.send_email(subject, html_content)
         
         except Exception as e:
             print(f"Error generating daily report: {str(e)}")
