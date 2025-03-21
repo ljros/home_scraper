@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request
 from shared.database import SessionLocal
-from scrapers.models import ApartmentListing
+from scrapers.models import OlxListing
 
 bp = Blueprint('apartments', __name__)
 
@@ -14,15 +14,15 @@ def listings():
     seller = request.args.get('seller')
 
     # Base query
-    query = session.query(ApartmentListing)
+    query = session.query(OlxListing)
 
     # Apply filters
     if min_price:
-        query = query.filter(ApartmentListing.price >= min_price)
+        query = query.filter(OlxListing.price >= min_price)
     if max_price:
-        query = query.filter(ApartmentListing.price <= max_price)
+        query = query.filter(OlxListing.price <= max_price)
     if seller:
-        query = query.filter(ApartmentListing.seller.ilike(f"%{seller}%"))
+        query = query.filter(OlxListing.seller.ilike(f"%{seller}%"))
 
     listings = query.all()
     session.close()
