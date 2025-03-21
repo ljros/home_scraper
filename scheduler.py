@@ -94,7 +94,7 @@ class DynamicScrapeScheduler:
                 id='daily_email_report',
                 replace_existing=True
             )
-            print(f"Scheduled daily email report at {SEND_REPORT_HOUR}:00:00")
+            print(f"Scheduled daily email report at {SEND_REPORT_HOUR}:{SEND_REPORT_MINUTE}:00")
         else:
             print("Daily email report disabled")
 
