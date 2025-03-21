@@ -56,7 +56,7 @@ class OtodomSpider(scrapy.Spider):
                 price_per_m = re.sub(r'\D', '', details_dd[0])
                 del details_dd[0:3]
             if 'Piętro' in details_dt:
-                if floor is "Parter":
+                if floor == "Parter":
                     floor = 0
                 elif floor and "10+" in floor:
                     floor = 10
