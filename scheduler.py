@@ -4,7 +4,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 import pytz
 from datetime import datetime, timedelta
-from email.email_reporter import MailgunReporter
+from home_scraper.email_reporter import MailgunReporter
 
 
 SCRAPE_START_HOUR = int(os.getenv("SCRAPE_START_HOUR", 9))
