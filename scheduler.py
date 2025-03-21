@@ -135,6 +135,9 @@ def main():
     spider_names = ['olx', 'otodom']
     
     dynamic_scheduler = DynamicScrapeScheduler(spider_names)
+    #testing
+    dynamic_scheduler.send_daily_email_report()
+    
     scheduler = dynamic_scheduler.setup_daily_scheduler()
     
     print(f"Dynamic Scrape Scheduler started at {datetime.now(TIMEZONE)}")
